@@ -16,23 +16,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Get the preference wrapper from the application
-        val preferenceWrapper = (application as
-                PreferenceApplication).preferenceWrapper
+        // 1. Ganti pengambilan wrapper data dari PreferenceApplication ke SettingsApplication
+        // 2. Ganti 'preferenceWrapper' menjadi 'settingsStore'
+        val settingsStore = (application as SettingsApplication).settingsStore
 
-        // Create the view model instance with the preference wrapper as the
+        // Create the view model instance with the settings store as the
         // constructor parameter
-        // To pass the preference wrapper to the view model, we need to use
+        // To pass the settings store to the view model, we need to use
         // a view model factory
         val preferenceViewModel = ViewModelProvider(this, object :
             ViewModelProvider.Factory {
+            // Ganti PreferenceViewModel dengan SettingsViewModel
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return PreferenceViewModel(preferenceWrapper) as T
+                return SettingsViewModel(settingsStore) as T
             }
-        })[PreferenceViewModel::class.java]
+            // Ganti PreferenceViewModel::class.java dengan SettingsViewModel::class.java
+        })[SettingsViewModel::class.java]
 
         // Observe the text live data
-        preferenceViewModel.getText().observe(this
+        // Ganti preferenceViewModel.getText().observe(this menjadi preferenceViewModel.textLiveData.observe(this
+        preferenceViewModel.textLiveData.observe(this
         ) {
             // Update the text view when the text live data changes
             findViewById<TextView>(
